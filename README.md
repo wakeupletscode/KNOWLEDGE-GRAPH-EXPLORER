@@ -19,6 +19,7 @@ This tool takes a Wikipedia topic as input, extracts entities and relationships 
 - 🔎 **CLI Query Engine** — Explore any entity's incoming and outgoing connections interactively
 
 ---
+# User Input : "Paracetamol"
 
 ## 📸 Screenshots
 
@@ -31,7 +32,6 @@ This tool takes a Wikipedia topic as input, extracts entities and relationships 
 
 
 ---
-
 ## 🛠️ Tech Stack
 
 | Library | Purpose |
