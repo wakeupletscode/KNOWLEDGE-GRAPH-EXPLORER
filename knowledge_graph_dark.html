@@ -1,0 +1,258 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #111111;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 750px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#1f77ff", "font": {"color": "white"}, "id": "Paracetamol", "label": "Paracetamol", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "damage", "label": "damage", "shape": "dot", "size": 16.89395441180647}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "pain", "label": "pain", "shape": "dot", "size": 17.67522305024451}, {"color": "#ff4d4d", "font": {"color": "white"}, "id": "paracetamol", "label": "paracetamol", "shape": "dot", "size": 45}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "dogs", "label": "dogs", "shape": "dot", "size": 13.422038109102573}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "It", "label": "It", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "States", "label": "States", "shape": "dot", "size": 16.12813386372614}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "osteoarthritis", "label": "osteoarthritis", "shape": "dot", "size": 16.82887821535644}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "them", "label": "them", "shape": "dot", "size": 14.255270483320068}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "mother", "label": "mother", "shape": "dot", "size": 14.060954716858847}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "it", "label": "it", "shape": "dot", "size": 13.55452613168977}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "ibuprofen", "label": "ibuprofen", "shape": "dot", "size": 13.29373889923872}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "prescriptions", "label": "prescriptions", "shape": "dot", "size": 12.26818346513783}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "application", "label": "application", "shape": "dot", "size": 12.26818346513783}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "individuals", "label": "individuals", "shape": "dot", "size": 12.26818346513783}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "irritation", "label": "irritation", "shape": "dot", "size": 12.26818346513783}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "liver", "label": "liver", "shape": "dot", "size": 17.7909243579833}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "dose", "label": "dose", "shape": "dot", "size": 12.26818346513783}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "%", "label": "%", "shape": "dot", "size": 17.56680712998833}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "precursor", "label": "precursor", "shape": "dot", "size": 12.26818346513783}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "ulcers", "label": "ulcers", "shape": "dot", "size": 12.26818346513783}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "combination", "label": "combination", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "drug", "label": "drug", "shape": "dot", "size": 16.336518180930685}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "migraine", "label": "migraine", "shape": "dot", "size": 12.421346546103965}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "choice", "label": "choice", "shape": "dot", "size": 12.35951880222994}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "codeine", "label": "codeine", "shape": "dot", "size": 12.35951880222994}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "prescription", "label": "prescription", "shape": "dot", "size": 12.35951880222994}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "napsylate", "label": "napsylate", "shape": "dot", "size": 12.35951880222994}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "pregnancy", "label": "pregnancy", "shape": "dot", "size": 17.045021575260705}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "term", "label": "term", "shape": "dot", "size": 13.256578648243652}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "throat", "label": "throat", "shape": "dot", "size": 13.256578648243652}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "mortality", "label": "mortality", "shape": "dot", "size": 13.256578648243652}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "safety", "label": "safety", "shape": "dot", "size": 13.256578648243652}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "drugs", "label": "drugs", "shape": "dot", "size": 13.450894414704873}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "effects", "label": "effects", "shape": "dot", "size": 15.296894196086473}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "substance", "label": "substance", "shape": "dot", "size": 13.256578648243652}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "illness", "label": "illness", "shape": "dot", "size": 13.256578648243652}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "methemoglobinemia", "label": "methemoglobinemia", "shape": "dot", "size": 13.709982103319835}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "agents", "label": "agents", "shape": "dot", "size": 13.256578648243652}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "source", "label": "source", "shape": "dot", "size": 13.256578648243652}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "compound", "label": "compound", "shape": "dot", "size": 13.256578648243652}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "Australia", "label": "Australia", "shape": "dot", "size": 15.773210263853233}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "Evidence", "label": "Evidence", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "who", "label": "who", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "placebo", "label": "placebo", "shape": "dot", "size": 13.55452613168977}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "bleeding", "label": "bleeding", "shape": "dot", "size": 13.55452613168977}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "use", "label": "use", "shape": "dot", "size": 15.272000900235883}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "study", "label": "study", "shape": "dot", "size": 14.071359206605951}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "consumption", "label": "consumption", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "doses", "label": "doses", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "failure", "label": "failure", "shape": "dot", "size": 12.453403455076183}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "ingestion", "label": "ingestion", "shape": "dot", "size": 16.466104845812655}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "poisoning", "label": "poisoning", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "that", "label": "that", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "urine", "label": "urine", "shape": "dot", "size": 14.369942874030773}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "Exacerbation", "label": "Exacerbation", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "medications", "label": "medications", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "evidence", "label": "evidence", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "people", "label": "people", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "toxicity", "label": "toxicity", "shape": "dot", "size": 14.720420730457095}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "recommendation", "label": "recommendation", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "algorithm", "label": "algorithm", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "analgesia", "label": "analgesia", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "group", "label": "group", "shape": "dot", "size": 14.70999546533791}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "enzymes", "label": "enzymes", "shape": "dot", "size": 15.390100647952185}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "Pain", "label": "Pain", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "which", "label": "which", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "combinations", "label": "combinations", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "studies", "label": "studies", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "ADHD", "label": "ADHD", "shape": "dot", "size": 12.629157903902396}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "causation", "label": "causation", "shape": "dot", "size": 12.629157903902396}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "conditions", "label": "conditions", "shape": "dot", "size": 12.629157903902396}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "agencies", "label": "agencies", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "duration", "label": "duration", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "amount", "label": "amount", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "emptying", "label": "emptying", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "existent", "label": "existent", "shape": "dot", "size": 14.08066227871222}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "disease", "label": "disease", "shape": "dot", "size": 12.680105182614273}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "years", "label": "years", "shape": "dot", "size": 13.938420990419065}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "frequency", "label": "frequency", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "Increase", "label": "Increase", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "behavior", "label": "behavior", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "number", "label": "number", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "importance", "label": "importance", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "effect", "label": "effect", "shape": "dot", "size": 13.989368269130942}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "rate", "label": "rate", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "most", "label": "most", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "These", "label": "These", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "increase", "label": "increase", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "dependence", "label": "dependence", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "asthma", "label": "asthma", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "controversy", "label": "controversy", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "cases", "label": "cases", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "period", "label": "period", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "acetaminophen", "label": "acetaminophen", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "deaths", "label": "deaths", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "opioids", "label": "opioids", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "risk", "label": "risk", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "alcohol", "label": "alcohol", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "Signs", "label": "Signs", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "they", "label": "they", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "Treatment", "label": "Treatment", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "glutathione", "label": "glutathione", "shape": "dot", "size": 14.040315547842821}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "stress", "label": "stress", "shape": "dot", "size": 15.094842240800098}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "person", "label": "person", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "overdose", "label": "overdose", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "NAC", "label": "NAC", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "Patients", "label": "Patients", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "assessment", "label": "assessment", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "Toxicity", "label": "Toxicity", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "Cmax", "label": "Cmax", "shape": "dot", "size": 14.42669268185289}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "Medications", "label": "Medications", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "tmax", "label": "tmax", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "significance", "label": "significance", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "metoclopramide", "label": "metoclopramide", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "inducers", "label": "inducers", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "Paracetamol#Pharmacokinetics", "label": "Paracetamol#Pharmacokinetics", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "isoniazid", "label": "isoniazid", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "Ranitidine", "label": "Ranitidine", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "fold", "label": "fold", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "increases", "label": "increases", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "nizatidine", "label": "nizatidine", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "inhibits", "label": "inhibits", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "inhibition", "label": "inhibition", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "centers", "label": "centers", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "AM404", "label": "AM404", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "receptor", "label": "receptor", "shape": "dot", "size": 12.629157903902396}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "mice", "label": "mice", "shape": "dot", "size": 12.629157903902396}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "concentrations", "label": "concentrations", "shape": "dot", "size": 12.629157903902396}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "metabolite", "label": "metabolite", "shape": "dot", "size": 14.8121664319799}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "system", "label": "system", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": ".", "label": ".", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "neurons", "label": "neurons", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "mechanism", "label": "mechanism", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "metabolites", "label": "metabolites", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "vitro", "label": "vitro", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "absorption", "label": "absorption", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "stomach", "label": "stomach", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "time", "label": "time", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "state", "label": "state", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "meal", "label": "meal", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "meals", "label": "meals", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "products", "label": "products", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "right", "label": "right", "shape": "dot", "size": 13.360210365228548}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "NAPQI", "label": "NAPQI", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "direction", "label": "direction", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "aminophenol", "label": "aminophenol", "shape": "dot", "size": 16.080631095685643}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "nitrobenzene", "label": "nitrobenzene", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "Chloride", "label": "Chloride", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "Aminophenol", "label": "Aminophenol", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "phenacetin", "label": "phenacetin", "shape": "dot", "size": 12.741932926488298}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "This", "label": "This", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "restrictions", "label": "restrictions", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "FDA", "label": "FDA", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "Life", "label": "Life", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "maker", "label": "maker", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "APAP", "label": "APAP", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "succinate", "label": "succinate", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "guaifenesin", "label": "guaifenesin", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "Acetylcysteine", "label": "Acetylcysteine", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "ulceration", "label": "ulceration", "shape": "dot", "size": 12.0}, {"color": "#1f77ff", "font": {"color": "white"}, "id": "treatment", "label": "treatment", "shape": "dot", "size": 12.0}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "#888888", "from": "Paracetamol", "to": "damage", "width": 2}, {"arrows": "to", "color": "#888888", "from": "Paracetamol", "to": "pain", "width": 2}, {"arrows": "to", "color": "#ffffff", "from": "Paracetamol", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#888888", "from": "Paracetamol", "to": "dogs", "width": 2}, {"arrows": "to", "color": "#888888", "from": "damage", "to": "liver", "width": 2}, {"arrows": "to", "color": "#888888", "from": "pain", "to": "them", "width": 2}, {"arrows": "to", "color": "#888888", "from": "pain", "to": "mother", "width": 2}, {"arrows": "to", "color": "#888888", "from": "pain", "to": "osteoarthritis", "width": 2}, {"arrows": "to", "color": "#ffffff", "from": "paracetamol", "to": "osteoarthritis", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "paracetamol", "to": "term", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "paracetamol", "to": "throat", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "paracetamol", "to": "mortality", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "paracetamol", "to": "safety", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "paracetamol", "to": "pain", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "paracetamol", "to": "drugs", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "paracetamol", "to": "%", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "paracetamol", "to": "effects", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "paracetamol", "to": "States", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "paracetamol", "to": "substance", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "paracetamol", "to": "illness", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "paracetamol", "to": "methemoglobinemia", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "paracetamol", "to": "drug", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "paracetamol", "to": "agents", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "paracetamol", "to": "source", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "paracetamol", "to": "compound", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "paracetamol", "to": "Australia", "width": 4}, {"arrows": "to", "color": "#888888", "from": "It", "to": "States", "width": 2}, {"arrows": "to", "color": "#888888", "from": "It", "to": "osteoarthritis", "width": 2}, {"arrows": "to", "color": "#888888", "from": "it", "to": "ibuprofen", "width": 2}, {"arrows": "to", "color": "#888888", "from": "it", "to": "prescriptions", "width": 2}, {"arrows": "to", "color": "#888888", "from": "it", "to": "application", "width": 2}, {"arrows": "to", "color": "#888888", "from": "it", "to": "individuals", "width": 2}, {"arrows": "to", "color": "#888888", "from": "it", "to": "irritation", "width": 2}, {"arrows": "to", "color": "#888888", "from": "it", "to": "liver", "width": 2}, {"arrows": "to", "color": "#888888", "from": "it", "to": "dose", "width": 2}, {"arrows": "to", "color": "#888888", "from": "it", "to": "%", "width": 2}, {"arrows": "to", "color": "#888888", "from": "it", "to": "precursor", "width": 2}, {"arrows": "to", "color": "#888888", "from": "it", "to": "ulcers", "width": 2}, {"arrows": "to", "color": "#888888", "from": "%", "to": "group", "width": 2}, {"arrows": "to", "color": "#888888", "from": "%", "to": "urine", "width": 2}, {"arrows": "to", "color": "#888888", "from": "%", "to": "enzymes", "width": 2}, {"arrows": "to", "color": "#888888", "from": "combination", "to": "drug", "width": 2}, {"arrows": "to", "color": "#888888", "from": "combination", "to": "migraine", "width": 2}, {"arrows": "to", "color": "#888888", "from": "combination", "to": "choice", "width": 2}, {"arrows": "to", "color": "#888888", "from": "combination", "to": "codeine", "width": 2}, {"arrows": "to", "color": "#888888", "from": "combination", "to": "pain", "width": 2}, {"arrows": "to", "color": "#888888", "from": "combination", "to": "prescription", "width": 2}, {"arrows": "to", "color": "#888888", "from": "combination", "to": "napsylate", "width": 2}, {"arrows": "to", "color": "#888888", "from": "drug", "to": "pregnancy", "width": 2}, {"arrows": "to", "color": "#888888", "from": "drugs", "to": "use", "width": 2}, {"arrows": "to", "color": "#888888", "from": "effects", "to": "existent", "width": 2}, {"arrows": "to", "color": "#888888", "from": "effects", "to": "damage", "width": 2}, {"arrows": "to", "color": "#888888", "from": "methemoglobinemia", "to": "metabolite", "width": 2}, {"arrows": "to", "color": "#888888", "from": "agents", "to": "Cmax", "width": 2}, {"arrows": "to", "color": "#888888", "from": "Evidence", "to": "pain", "width": 2}, {"arrows": "to", "color": "#ffffff", "from": "who", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#888888", "from": "who", "to": "drugs", "width": 2}, {"arrows": "to", "color": "#888888", "from": "who", "to": "them", "width": 2}, {"arrows": "to", "color": "#888888", "from": "who", "to": "placebo", "width": 2}, {"arrows": "to", "color": "#888888", "from": "who", "to": "bleeding", "width": 2}, {"arrows": "to", "color": "#888888", "from": "placebo", "to": "%", "width": 2}, {"arrows": "to", "color": "#888888", "from": "use", "to": "study", "width": 2}, {"arrows": "to", "color": "#888888", "from": "use", "to": "damage", "width": 2}, {"arrows": "to", "color": "#888888", "from": "consumption", "to": "bleeding", "width": 2}, {"arrows": "to", "color": "#888888", "from": "doses", "to": "methemoglobinemia", "width": 2}, {"arrows": "to", "color": "#888888", "from": "failure", "to": "ingestion", "width": 2}, {"arrows": "to", "color": "#888888", "from": "poisoning", "to": "States", "width": 2}, {"arrows": "to", "color": "#888888", "from": "that", "to": "urine", "width": 2}, {"arrows": "to", "color": "#ffffff", "from": "that", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#888888", "from": "Exacerbation", "to": "medications", "width": 2}, {"arrows": "to", "color": "#888888", "from": "medications", "to": "Australia", "width": 2}, {"arrows": "to", "color": "#888888", "from": "evidence", "to": "pain", "width": 2}, {"arrows": "to", "color": "#ffffff", "from": "evidence", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#888888", "from": "people", "to": "toxicity", "width": 2}, {"arrows": "to", "color": "#888888", "from": "recommendation", "to": "osteoarthritis", "width": 2}, {"arrows": "to", "color": "#888888", "from": "algorithm", "to": "analgesia", "width": 2}, {"arrows": "to", "color": "#888888", "from": "Pain", "to": "pain", "width": 2}, {"arrows": "to", "color": "#888888", "from": "which", "to": "pain", "width": 2}, {"arrows": "to", "color": "#ffffff", "from": "which", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#888888", "from": "which", "to": "it", "width": 2}, {"arrows": "to", "color": "#ffffff", "from": "combinations", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#888888", "from": "studies", "to": "pain", "width": 2}, {"arrows": "to", "color": "#888888", "from": "studies", "to": "ADHD", "width": 2}, {"arrows": "to", "color": "#888888", "from": "studies", "to": "causation", "width": 2}, {"arrows": "to", "color": "#888888", "from": "studies", "to": "conditions", "width": 2}, {"arrows": "to", "color": "#888888", "from": "agencies", "to": "duration", "width": 2}, {"arrows": "to", "color": "#888888", "from": "amount", "to": "effects", "width": 2}, {"arrows": "to", "color": "#888888", "from": "amount", "to": "emptying", "width": 2}, {"arrows": "to", "color": "#888888", "from": "disease", "to": "years", "width": 2}, {"arrows": "to", "color": "#888888", "from": "frequency", "to": "use", "width": 2}, {"arrows": "to", "color": "#888888", "from": "Increase", "to": "behavior", "width": 2}, {"arrows": "to", "color": "#888888", "from": "number", "to": "placebo", "width": 2}, {"arrows": "to", "color": "#888888", "from": "importance", "to": "effect", "width": 2}, {"arrows": "to", "color": "#ffffff", "from": "effect", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#888888", "from": "rate", "to": "group", "width": 2}, {"arrows": "to", "color": "#888888", "from": "rate", "to": "emptying", "width": 2}, {"arrows": "to", "color": "#888888", "from": "most", "to": "studies", "width": 2}, {"arrows": "to", "color": "#ffffff", "from": "These", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#888888", "from": "increase", "to": "dependence", "width": 2}, {"arrows": "to", "color": "#888888", "from": "asthma", "to": "controversy", "width": 2}, {"arrows": "to", "color": "#888888", "from": "cases", "to": "period", "width": 2}, {"arrows": "to", "color": "#888888", "from": "acetaminophen", "to": "deaths", "width": 2}, {"arrows": "to", "color": "#ffffff", "from": "opioids", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#888888", "from": "risk", "to": "alcohol", "width": 2}, {"arrows": "to", "color": "#888888", "from": "Signs", "to": "toxicity", "width": 2}, {"arrows": "to", "color": "#888888", "from": "they", "to": "drug", "width": 2}, {"arrows": "to", "color": "#888888", "from": "Treatment", "to": "glutathione", "width": 2}, {"arrows": "to", "color": "#888888", "from": "glutathione", "to": "stress", "width": 2}, {"arrows": "to", "color": "#888888", "from": "person", "to": "overdose", "width": 2}, {"arrows": "to", "color": "#888888", "from": "NAC", "to": "ingestion", "width": 2}, {"arrows": "to", "color": "#888888", "from": "Patients", "to": "assessment", "width": 2}, {"arrows": "to", "color": "#888888", "from": "Toxicity", "to": "it", "width": 2}, {"arrows": "to", "color": "#888888", "from": "Medications", "to": "tmax", "width": 2}, {"arrows": "to", "color": "#888888", "from": "significance", "to": "metoclopramide", "width": 2}, {"arrows": "to", "color": "#888888", "from": "inducers", "to": "Paracetamol#Pharmacokinetics", "width": 2}, {"arrows": "to", "color": "#888888", "from": "isoniazid", "to": "%", "width": 2}, {"arrows": "to", "color": "#888888", "from": "Ranitidine", "to": "fold", "width": 2}, {"arrows": "to", "color": "#888888", "from": "increases", "to": "nizatidine", "width": 2}, {"arrows": "to", "color": "#888888", "from": "inhibits", "to": "enzymes", "width": 2}, {"arrows": "to", "color": "#ffffff", "from": "inhibition", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#888888", "from": "centers", "to": "AM404", "width": 2}, {"arrows": "to", "color": "#888888", "from": "AM404", "to": "receptor", "width": 2}, {"arrows": "to", "color": "#888888", "from": "AM404", "to": "mice", "width": 2}, {"arrows": "to", "color": "#888888", "from": "AM404", "to": "concentrations", "width": 2}, {"arrows": "to", "color": "#888888", "from": "AM404", "to": "effect", "width": 2}, {"arrows": "to", "color": "#ffffff", "from": "metabolite", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "system", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#888888", "from": ".", "to": "neurons", "width": 2}, {"arrows": "to", "color": "#ffffff", "from": "mechanism", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#888888", "from": "metabolites", "to": "vitro", "width": 2}, {"arrows": "to", "color": "#888888", "from": "absorption", "to": "stomach", "width": 2}, {"arrows": "to", "color": "#888888", "from": "time", "to": "state", "width": 2}, {"arrows": "to", "color": "#888888", "from": "meal", "to": "meals", "width": 2}, {"arrows": "to", "color": "#888888", "from": "products", "to": "right", "width": 2}, {"arrows": "to", "color": "#ffffff", "from": "NAPQI", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#888888", "from": "NAPQI", "to": "glutathione", "width": 2}, {"arrows": "to", "color": "#888888", "from": "direction", "to": "aminophenol", "width": 2}, {"arrows": "to", "color": "#888888", "from": "nitrobenzene", "to": "aminophenol", "width": 2}, {"arrows": "to", "color": "#888888", "from": "Chloride", "to": "aminophenol", "width": 2}, {"arrows": "to", "color": "#ffffff", "from": "Aminophenol", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "phenacetin", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#ffffff", "from": "This", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#888888", "from": "restrictions", "to": "effects", "width": 2}, {"arrows": "to", "color": "#888888", "from": "FDA", "to": "damage", "width": 2}, {"arrows": "to", "color": "#ffffff", "from": "Life", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#888888", "from": "maker", "to": "drug", "width": 2}, {"arrows": "to", "color": "#888888", "from": "APAP", "to": "States", "width": 2}, {"arrows": "to", "color": "#ffffff", "from": "succinate", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#888888", "from": "guaifenesin", "to": "combination", "width": 2}, {"arrows": "to", "color": "#ffffff", "from": "Acetylcysteine", "to": "paracetamol", "width": 4}, {"arrows": "to", "color": "#888888", "from": "ulceration", "to": "dogs", "width": 2}, {"arrows": "to", "color": "#888888", "from": "treatment", "to": "ingestion", "width": 2}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.09,
+            "gravitationalConstant": -8000,
+            "springConstant": 0.05,
+            "springLength": 150
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
